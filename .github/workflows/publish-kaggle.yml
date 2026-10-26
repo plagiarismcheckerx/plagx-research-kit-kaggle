@@ -1,0 +1,33 @@
+name: Publish to Kaggle
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build notebook
+        run: python build_notebook.py
+
+      - name: Test notebook
+        run: |
+          pip install -q pandas nbconvert ipykernel
+          jupyter nbconvert --to notebook --execute plagx-research-kit.ipynb --output /tmp/executed.ipynb
+
+      - name: Push to Kaggle
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        run: |
+          pip install -q kaggle
+          sed -i "s/KAGGLE_USERNAME/${KAGGLE_USERNAME}/" kernel-metadata.json
+          kaggle kernels push -p .
