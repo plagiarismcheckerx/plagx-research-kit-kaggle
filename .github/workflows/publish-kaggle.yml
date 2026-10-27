@@ -5,9 +5,16 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  PLAGX_CITE_VERSION: "0.2.1"
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -23,12 +30,36 @@ jobs:
           pip install -q pandas nbconvert ipykernel
           jupyter nbconvert --to notebook --execute plagx-research-kit.ipynb --output /tmp/executed.ipynb
 
-      - name: Push to Kaggle
-        env:
-          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      - name: Install Kaggle CLI
         run: |
           pip install -q --upgrade kaggle
-          sed -i "s/KAGGLE_USERNAME/${KAGGLE_USERNAME}/" kernel-metadata.json
-          kaggle kernels push -p .
+          sed -i "s/KAGGLE_USERNAME/${KAGGLE_USERNAME}/g" kernel-metadata.json
+
+      # Kaggle notebooks have no internet without phone verification,
+      # so plagx-cite is attached as a dataset holding its PyPI wheel.
+      - name: Upload plagx-cite wheel dataset
+        run: |
+          mkdir wheel && cp LICENSE wheel/
+          pip download -q --no-deps "plagx-cite==${PLAGX_CITE_VERSION}" -d wheel
+          cat > wheel/dataset-metadata.json <<EOF
+          {
+            "title": "plagx-cite wheel",
+            "id": "${KAGGLE_USERNAME}/plagx-cite-wheel",
+            "subtitle": "Offline install of the MIT-licensed plagx-cite package from PyPI",
+            "licenses": [{"name": "other"}]
+          }
+          EOF
+          if kaggle datasets status "${KAGGLE_USERNAME}/plagx-cite-wheel" >/dev/null 2>&1; then
+            kaggle datasets version -p wheel -m "plagx-cite ${PLAGX_CITE_VERSION}" || true
+          else
+            kaggle datasets create -p wheel --public
+          fi
+          for i in $(seq 1 30); do
+            status=$(kaggle datasets status "${KAGGLE_USERNAME}/plagx-cite-wheel" 2>&1 || true)
+            echo "Dataset status: $status"
+            echo "$status" | grep -qi ready && break
+            sleep 10
+          done
+
+      - name: Push notebook to Kaggle
+        run: kaggle kernels push -p .

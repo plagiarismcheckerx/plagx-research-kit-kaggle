@@ -35,11 +35,14 @@ Citations are formatted with [Plagx Cite](https://pypi.org/project/plagx-cite/),
 md("""
 ## 1. Setup
 
-`plagx-cite` is installed from PyPI. Turn on **Internet** in the notebook settings (right-hand panel, *Session options*) before running this cell.
+`plagx-cite` is installed from the attached [plagx-cite-wheel](https://www.kaggle.com/datasets/plagiarismcheckerx/plagx-cite-wheel) dataset, so no internet is needed. Outside Kaggle it is installed from PyPI.
 """)
 
 code("""
-%pip install -q plagx-cite==0.2.1
+import glob, subprocess, sys
+
+wheels = glob.glob("/kaggle/input/**/plagx_cite-*.whl", recursive=True)
+subprocess.check_call([sys.executable, "-m", "pip", "install", "-q", "--no-deps", *(wheels[:1] or ["plagx-cite==0.2.1"])])
 """)
 
 code("""
