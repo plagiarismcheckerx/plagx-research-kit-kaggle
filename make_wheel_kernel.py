@@ -26,7 +26,7 @@ out.mkdir(exist_ok=True)
     "code_file": "plagx_cite_wheel.py",
     "language": "python",
     "kernel_type": "script",
-    "is_private": False,
+    "is_private": True,
     "enable_gpu": False,
     "enable_tpu": False,
     "enable_internet": False,
