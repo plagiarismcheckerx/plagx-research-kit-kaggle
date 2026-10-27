@@ -25,7 +25,7 @@ Outside Kaggle the templates are written to `output/`.
 
 Every push to `main` rebuilds the notebook, test-runs it, and pushes it to Kaggle ([publish-kaggle.yml](.github/workflows/publish-kaggle.yml)).
 
-One-time setup: in the GitHub repo, open **Settings → Secrets and variables → Actions** and add `KAGGLE_USERNAME` and `KAGGLE_KEY` (both from `kaggle.json`). To publish it publicly, set `"is_private": false` in `kernel-metadata.json`.
+One-time setup: in the GitHub repo, open **Settings → Secrets and variables → Actions** and add `KAGGLE_USERNAME` and either `KAGGLE_API_TOKEN` (new-style token shown once in Kaggle Settings → API Tokens) or `KAGGLE_KEY` (from a legacy `kaggle.json`). To publish it publicly, set `"is_private": false` in `kernel-metadata.json`.
 
 ## Publish to Kaggle manually
 
