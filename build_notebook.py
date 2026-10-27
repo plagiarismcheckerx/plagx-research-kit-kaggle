@@ -35,7 +35,7 @@ Citations are formatted with [Plagx Cite](https://pypi.org/project/plagx-cite/),
 md("""
 ## 1. Setup
 
-`plagx-cite` is installed from the attached [plagx-cite-wheel](https://www.kaggle.com/datasets/plagiarismcheckerx/plagx-cite-wheel) dataset, so no internet is needed. Outside Kaggle it is installed from PyPI.
+`plagx-cite` is installed from the attached [Plagx Research Kit templates](https://www.kaggle.com/datasets/plagiarismcheckerx/plagx-research-kit-templates) dataset, so no internet is needed. Outside Kaggle it is installed from PyPI.
 """)
 
 code("""

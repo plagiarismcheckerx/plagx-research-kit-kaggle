@@ -29,33 +29,38 @@ jobs:
         run: |
           pip install -q pandas nbconvert ipykernel
           jupyter nbconvert --to notebook --execute plagx-research-kit.ipynb --output /tmp/executed.ipynb
+          ls output
 
       - name: Install Kaggle CLI
         run: |
           pip install -q --upgrade kaggle
           sed -i "s/KAGGLE_USERNAME/${KAGGLE_USERNAME}/g" kernel-metadata.json
 
-      # Kaggle notebooks have no internet without phone verification, so
-      # plagx-cite is attached as a dataset holding its PyPI wheel.
-      # Kaggle may answer 499 even when the dataset was created, so a failed
-      # upload is not fatal; the notebook run shows whether the wheel is there.
-      - name: Upload plagx-cite wheel dataset (first run only)
+      # Companion dataset: the templates the notebook produces, plus the
+      # plagx-cite wheel so the notebook runs without internet (Kaggle needs
+      # phone verification for internet). Kaggle may answer 499 even when the
+      # upload worked, so upload errors are not fatal.
+      - name: Upload Plagx Research Kit templates dataset
         run: |
-          if kaggle datasets files "${KAGGLE_USERNAME}/plagx-cite-wheel" 2>/dev/null | grep -q '\.whl'; then
-            echo "Dataset already has the wheel"
-            exit 0
+          mkdir dataset
+          cp output/* LICENSE dataset/
+          pip download -q --no-deps "plagx-cite==${PLAGX_CITE_VERSION}" -d dataset
+          python - <<'PY'
+          import json, os
+          json.dump({
+              "title": "Plagx Research Kit - templates",
+              "id": f"{os.environ['KAGGLE_USERNAME']}/plagx-research-kit-templates",
+              "subtitle": "Source log, literature matrix and research plan templates for students",
+              "description": open("dataset-description.md", encoding="utf-8").read(),
+              "licenses": [{"name": "other"}],
+              "keywords": ["education", "research"],
+          }, open("dataset/dataset-metadata.json", "w"), indent=2)
+          PY
+          if kaggle datasets files "${KAGGLE_USERNAME}/plagx-research-kit-templates" >/dev/null 2>&1; then
+            kaggle datasets version -p dataset -m "Update templates" || echo "Version upload reported an error; continuing"
+          else
+            kaggle datasets create -p dataset --public || echo "Upload reported an error; continuing"
           fi
-          mkdir wheel && cp LICENSE wheel/
-          pip download -q --no-deps "plagx-cite==${PLAGX_CITE_VERSION}" -d wheel
-          cat > wheel/dataset-metadata.json <<EOF
-          {
-            "title": "plagx-cite wheel",
-            "id": "${KAGGLE_USERNAME}/plagx-cite-wheel",
-            "subtitle": "Offline install of the MIT-licensed plagx-cite package from PyPI",
-            "licenses": [{"name": "other"}]
-          }
-          EOF
-          kaggle datasets create -p wheel --public || echo "Upload reported an error; continuing"
           sleep 60
 
       - name: Push notebook to Kaggle

@@ -9,7 +9,7 @@
   "enable_tpu": false,
   "enable_internet": false,
   "keywords": ["education", "nlp", "beginner", "tutorial"],
-  "dataset_sources": ["KAGGLE_USERNAME/plagx-cite-wheel"],
+  "dataset_sources": ["KAGGLE_USERNAME/plagx-research-kit-templates"],
   "kernel_sources": [],
   "competition_sources": [],
   "model_sources": []
