@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-PCX = "https://plagiarismcheckerx.com/?utm_source=kaggle&utm_medium=notebook&utm_campaign=plagx-research-kit"
+PCX = "https://plagiarismcheckerx.com/?utm_source=plagx-research-kit-kaggle"
 
 cells = []
 

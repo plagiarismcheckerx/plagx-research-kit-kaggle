@@ -18,6 +18,6 @@ All example sources are made up.
 
 ## What this does not do
 
-These templates do not check for plagiarism or detect AI-generated text. To check complete documents, use [Plagiarism Checker X](https://plagiarismcheckerx.com/?utm_source=kaggle&utm_medium=dataset&utm_campaign=plagx-research-kit).
+These templates do not check for plagiarism or detect AI-generated text. To check complete documents, use [Plagiarism Checker X](https://plagiarismcheckerx.com/?utm_source=plagx-research-kit-kaggle-dataset).
 
 Source: [github.com/plagiarismcheckerx/plagx-research-kit-kaggle](https://github.com/plagiarismcheckerx/plagx-research-kit-kaggle) · MIT License

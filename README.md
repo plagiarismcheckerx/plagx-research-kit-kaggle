@@ -37,7 +37,7 @@ One-time setup: in the GitHub repo, open **Settings â†’ Secrets and variables â†
 
 ## What this notebook does not do
 
-It does not check for plagiarism or detect AI-generated text. To check complete documents, use [Plagiarism Checker X](https://plagiarismcheckerx.com/).
+It does not check for plagiarism or detect AI-generated text. To check complete documents, use [Plagiarism Checker X](https://plagiarismcheckerx.com/?utm_source=plagx-research-kit-kaggle-readme).
 
 ## License
 
